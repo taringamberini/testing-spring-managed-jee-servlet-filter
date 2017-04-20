@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class HelloWorldController {
 
-  @RequestMapping("/helloworld")
+  @RequestMapping({"/helloworld", "/filter/helloworld"})
   public String helloworld() {
     return "helloworld";
   }
