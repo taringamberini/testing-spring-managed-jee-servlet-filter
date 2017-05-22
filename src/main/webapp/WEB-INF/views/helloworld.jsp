@@ -7,5 +7,6 @@
   </head>
   <body>
     <h1>Hello World!</h1>
+    <p>${requestScope.personName}</p>
   </body>
 </html>
