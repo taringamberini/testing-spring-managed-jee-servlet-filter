@@ -9,19 +9,26 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 /**
  * @author Tarin Gamberini (www.taringamberini.com)
  */
+@Component()
 public class MyFilter implements Filter {
 
+  @Autowired
   private PersonSrv personSrv;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MyFilter.class);
 
   @Override
   public void init(FilterConfig filterConfig) {
-    LOGGER.debug("initialized Servlet Filter");
+    SpringBeanAutowiringSupport.
+            processInjectionBasedOnServletContext(this, filterConfig.getServletContext());
+    LOGGER.debug("initialized Spring managed Servlet Filter");
   }
 
   @Override
@@ -30,7 +37,6 @@ public class MyFilter implements Filter {
     if (personId == null || personId.trim().isEmpty()) {
       request.setAttribute("personName", "unkown");
     } else {
-      PersonSrv personSrv = new PersonSrv();
       Person person = personSrv.find(Long.parseLong(personId));
       if (personId == null || personId.trim().isEmpty()) {
         request.setAttribute("personName", "unkown");
