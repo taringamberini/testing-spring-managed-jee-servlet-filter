@@ -16,32 +16,36 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 /**
  * @author Tarin Gamberini (www.taringamberini.com)
  */
-@Component()
+@Component
 public class MyFilter implements Filter {
 
+  public static final String PERSON_NAME_REQUEST_ATTRIBUTE = "personName";
+  public static final String UNKOWN = "unkown";
+  public static final String WHO_REQUEST_PARAMETER = "who";
+  private static final Logger LOGGER = LoggerFactory.getLogger(MyFilter.class);
   @Autowired
   private PersonSrv personSrv;
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(MyFilter.class);
 
   @Override
   public void init(FilterConfig filterConfig) {
     SpringBeanAutowiringSupport.
-            processInjectionBasedOnServletContext(this, filterConfig.getServletContext());
+            processInjectionBasedOnServletContext(
+                    this, filterConfig.getServletContext());
     LOGGER.debug("initialized Spring managed Servlet Filter");
   }
 
   @Override
-  public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-    String personId = request.getParameter("who");
+  public void doFilter(ServletRequest request, ServletResponse response,
+          FilterChain chain) throws IOException, ServletException {
+    String personId = request.getParameter(WHO_REQUEST_PARAMETER);
     if (personId == null || personId.trim().isEmpty()) {
-      request.setAttribute("personName", "unkown");
+      request.setAttribute(PERSON_NAME_REQUEST_ATTRIBUTE, UNKOWN);
     } else {
       Person person = personSrv.find(Long.parseLong(personId));
       if (personId == null || personId.trim().isEmpty()) {
-        request.setAttribute("personName", "unkown");
+        request.setAttribute(PERSON_NAME_REQUEST_ATTRIBUTE, UNKOWN);
       } else {
-        request.setAttribute("personName", person.getName());
+        request.setAttribute(PERSON_NAME_REQUEST_ATTRIBUTE, person.getName());
       }
     }
     chain.doFilter(request, response);
